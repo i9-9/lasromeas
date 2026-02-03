@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Fuentes: Trajan Pro 3 (títulos) + Archivo (body) vía Typekit ─── */
+
+/* ─── Reset & Base ──────────────────────────── */
+@layer base {
+  :root {
+    /* Altura del navbar (h-16 + py-3) para que hero = 100vh - navbar */
+    --navbar-h: 5.5rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-page text-ink;
+    font-family: "archivo", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "trajan-pro-3", serif;
+  }
+
+  /* scrollbar custom */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-page;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink/20 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink/40;
+  }
+}
+
+/* ─── Components ────────────────────────────── */
+@layer components {
+  /* Botón primario — dorado */
+  .btn-gold {
+    @apply inline-flex items-center justify-center
+           px-6 py-3
+           bg-gold-dark text-ink
+           text-sm font-semibold tracking-widest uppercase
+           rounded-none
+           border border-gold-dark
+           transition-all duration-300 ease-out
+           hover:bg-gold hover:border-gold
+           active:scale-95;
+  }
+
+  /* Botón outline — tinta */
+  .btn-outline {
+    @apply inline-flex items-center justify-center
+           px-6 py-3
+           bg-transparent text-ink
+           text-sm font-semibold tracking-widest uppercase
+           rounded-none
+           border border-ink/40
+           transition-all duration-300 ease-out
+           hover:bg-ink hover:text-page
+           active:scale-95;
+  }
+
+  /* Separador decorativo dorado */
+  .divider-gold {
+    @apply w-16 h-px bg-gold mx-auto;
+  }
+
+  /* Etiqueta de sección */
+  .label-section {
+    @apply text-gold text-xs font-semibold tracking-[0.4em] uppercase;
+  }
+
+  /* Título de sección */
+  .title-section {
+    @apply text-ink text-3xl md:text-4xl font-light leading-tight;
+  }
+
+  /* Overlay sutil sobre hero (texto legible) */
+  .overlay-hero {
+    @apply absolute inset-0 bg-gradient-to-t
+           from-transparent via-transparent to-ink/20;
+  }
+}
+
+/* ─── Utilities ─────────────────────────────── */
+@layer utilities {
+  /* texto con gradiente dorado */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #C9A96E, #DFC898, #A07F4A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* escala suave al hover para cards */
+  .card-hover {
+    @apply transition-transform duration-500 ease-out hover:scale-[1.02];
+  }
+
+  /* animación fade-up al scroll (se activa con JS IntersectionObserver) */
+  .fade-up {
+    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+  }
+  .fade-up.visible {
+    @apply opacity-100 translate-y-0;
+  }
+}
