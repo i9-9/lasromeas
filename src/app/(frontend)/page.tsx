@@ -87,9 +87,9 @@ export default function HomePage() {
             <h2 className="title-section">Descubrí el Universo de Las Romeas</h2>
           </div>
 
-          {/* Grid de productos */}
+          {/* Grid de productos (máx 8 destacados en home) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {FEATURED_PRODUCTS.map((product) => (
+            {FEATURED_PRODUCTS.slice(0, 8).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

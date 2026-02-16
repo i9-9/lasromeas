@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -56,6 +57,46 @@ export default function ProductPage() {
 
   const t = product.techSheet;
   const categoryName = category?.name ?? "Shop";
+  const hasVariants = product.variants && product.variants.length > 0;
+
+  return (
+    <ProductDetailContent
+      product={product}
+      category={category}
+      categorySegment={categorySegment}
+      categoryName={categoryName}
+      hasVariants={!!hasVariants}
+      techSheet={t}
+    />
+  );
+}
+
+function ProductDetailContent({
+  product,
+  category,
+  categorySegment,
+  categoryName,
+  hasVariants,
+  techSheet: t,
+}: {
+  product: NonNullable<ReturnType<typeof PRODUCTS.find>>;
+  category: ReturnType<typeof CATEGORIES.find>;
+  categorySegment: string;
+  categoryName: string;
+  hasVariants: boolean;
+  techSheet: NonNullable<ReturnType<typeof PRODUCTS.find>>["techSheet"];
+}) {
+  const [selectedVariant, setSelectedVariant] = useState(0);
+
+  const activePrice = hasVariants
+    ? product.variants![selectedVariant].price
+    : product.price;
+
+  const activeAvailability = hasVariants
+    ? product.variants![selectedVariant].availability
+    : product.availability;
+
+  const isAvailable = activeAvailability !== "out of stock";
 
   return (
     <div className="min-h-screen bg-page">
@@ -89,33 +130,65 @@ export default function ProductPage() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14">
             {/* Imagen */}
             <div className="lg:col-span-2">
-              <div
-                className="aspect-square w-full max-w-md mx-auto lg:max-w-none rounded-sm overflow-hidden border border-ink/15"
-                style={{
-                  background: "linear-gradient(145deg, hsl(25, 15%, 92%), hsl(20, 12%, 88%))",
-                }}
-              >
-                <div className="w-full h-full flex items-center justify-center opacity-20">
-                  <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
-                    <circle cx="32" cy="32" r="28" stroke="#C9A96E" strokeWidth="1" />
-                    <path d="M32 18c-8 0-14 6-14 14s6 14 14 14 14-6 14-14-6-14-14-14z" stroke="#C9A96E" strokeWidth="1" fill="none" />
-                  </svg>
-                </div>
+              <div className="relative aspect-square w-full max-w-md mx-auto lg:max-w-none rounded-sm overflow-hidden border border-ink/15">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  priority
+                />
               </div>
               {product.description && (
                 <p className="mt-6 text-ink/80 text-sm leading-relaxed tracking-[0.02em]">
                   {product.description}
                 </p>
               )}
+
+              {/* Selector de variantes */}
+              {hasVariants && (
+                <div className="mt-6">
+                  <p className="label-section mb-3">Presentación</p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.variants!.map((v, i) => (
+                      <button
+                        key={v.label}
+                        onClick={() => setSelectedVariant(i)}
+                        className={`
+                          text-xs tracking-[0.12em] uppercase px-4 py-2.5 border
+                          transition-all duration-200
+                          ${selectedVariant === i
+                            ? "border-gold text-gold bg-gold/10"
+                            : v.availability === "out of stock"
+                              ? "border-ink/15 text-ink/30 line-through cursor-not-allowed"
+                              : "border-ink/25 text-ink/60 hover:border-gold/60 hover:text-gold"
+                          }
+                        `}
+                        disabled={v.availability === "out of stock"}
+                      >
+                        {v.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="mt-6 flex flex-wrap items-center gap-4">
-                <p className="text-gold text-xl font-semibold">{formatPrice(product.price)}</p>
-                <button
-                  type="button"
-                  className="btn-gold text-sm"
-                  onClick={() => alert(`Añadido al carrito: ${product.name}`)}
-                >
-                  Añadir al carrito
-                </button>
+                <p className="text-gold text-xl font-semibold">{formatPrice(activePrice)}</p>
+                {isAvailable ? (
+                  <button
+                    type="button"
+                    className="btn-gold text-sm"
+                    onClick={() => alert(`Añadido al carrito: ${product.name}${hasVariants ? ` (${product.variants![selectedVariant].label})` : ""}`)}
+                  >
+                    Añadir al carrito
+                  </button>
+                ) : (
+                  <span className="text-ink/40 text-xs tracking-[0.12em] uppercase">
+                    Sin stock
+                  </span>
+                )}
               </div>
             </div>
 

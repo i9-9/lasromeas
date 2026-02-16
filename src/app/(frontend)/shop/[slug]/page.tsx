@@ -13,7 +13,7 @@ export default function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
 
   const category = useMemo(
-    () => CATEGORIES.find((c) => c.slug === slug),
+    () => CATEGORIES.find((c) => c.slug === slug || c.id === slug),
     [slug]
   );
 

@@ -1,32 +1,34 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Product, formatPrice } from "@/data/products";
+import { CATEGORIES } from "@/data/categories";
 
 interface ProductCardProps {
   product: Product;
 }
 
+function getCategorySlug(categoryId: string): string {
+  return CATEGORIES.find((c) => c.id === categoryId)?.slug ?? categoryId;
+}
+
 export default function ProductCard({ product }: ProductCardProps) {
+  const catSlug = getCategorySlug(product.categoryId);
+
   return (
     <div className="group relative flex flex-col bg-ink/5 border border-ink/15
                     hover:border-gold/40 transition-all duration-500 overflow-hidden">
       {/* ── Imagen ──────────────────────────── */}
-      <Link href={`/shop/${product.categoryId}/${product.slug}`} className="relative aspect-square overflow-hidden">
-        {/* Placeholder visual — reemplazar con <Image> real */}
-        <div
-          className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
-          style={{
-            background: `linear-gradient(145deg, hsl(25, 15%, 92%), hsl(20, 12%, 88%))`,
-          }}
-        >
-          {/* Ícono placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-20">
-            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-              <circle cx="32" cy="32" r="28" stroke="#C9A96E" strokeWidth="1" />
-              <path d="M32 18c-8 0-14 6-14 14s6 14 14 14 14-6 14-14-6-14-14-14z" stroke="#C9A96E" strokeWidth="1" fill="none" />
-            </svg>
-          </div>
+      <Link href={`/shop/${catSlug}/${product.slug}`} className="relative aspect-square overflow-hidden">
+        <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+          />
         </div>
 
         {/* Overlay hover con botón "Añadir al carrito" */}
@@ -52,14 +54,18 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* ── Info ────────────────────────────── */}
       <div className="p-4 flex flex-col gap-1.5 flex-1">
         <Link
-          href={`/shop/${product.categoryId}/${product.slug}`}
+          href={`/shop/${catSlug}/${product.slug}`}
           className="text-ink/90 text-xs md:text-sm tracking-[0.1em] uppercase
                      hover:text-gold transition-colors duration-200 line-clamp-2 leading-relaxed"
         >
           {product.name}
         </Link>
         <p className="text-gold text-sm font-semibold mt-auto">
-          {formatPrice(product.price)}
+          {product.variants && product.variants.length > 0 ? (
+            <><span className="text-ink/40 text-xs font-normal">Desde </span>{formatPrice(product.price)}</>
+          ) : (
+            formatPrice(product.price)
+          )}
         </p>
       </div>
     </div>

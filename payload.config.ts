@@ -149,6 +149,38 @@ export default buildConfig({
           label: 'Destacado en home',
           admin: { description: 'Aparece en la sección de productos destacados del home' },
         },
+        {
+          name: 'availability',
+          type: 'select',
+          label: 'Disponibilidad',
+          defaultValue: 'in_stock',
+          options: [
+            { label: 'En stock', value: 'in_stock' },
+            { label: 'Sin stock', value: 'out_of_stock' },
+            { label: 'Pre-order', value: 'preorder' },
+          ],
+        },
+        {
+          name: 'variants',
+          type: 'array',
+          label: 'Variantes (peso/presentación)',
+          admin: { description: 'Si el producto tiene distintas presentaciones (ej: 100g, 250g, 500g)' },
+          fields: [
+            { name: 'label', type: 'text', required: true, label: 'Etiqueta (ej: 100g, x 8u)' },
+            { name: 'price', type: 'number', required: true, label: 'Precio (ARS)' },
+            {
+              name: 'availability',
+              type: 'select',
+              label: 'Disponibilidad',
+              defaultValue: 'in_stock',
+              options: [
+                { label: 'En stock', value: 'in_stock' },
+                { label: 'Sin stock', value: 'out_of_stock' },
+                { label: 'Pre-order', value: 'preorder' },
+              ],
+            },
+          ],
+        },
 
         /* ── Ficha técnica ── */
         {
