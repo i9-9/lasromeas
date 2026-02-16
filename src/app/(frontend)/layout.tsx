@@ -32,14 +32,13 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default function FrontendLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      {/* Adobe Typekit: Trajan Pro 3 (títulos) + Archivo (body) */}
       <head>
         <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://use.typekit.net/ken7mut.css" />

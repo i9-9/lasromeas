@@ -1,0 +1,66 @@
+/* ─── Las Romeas — Admin Theme ─── */
+
+:root {
+  /* Fondo principal oscuro */
+  --theme-elevation-0: #1a1715;
+  --theme-elevation-50: #231f1c;
+  --theme-elevation-100: #2c2723;
+  --theme-elevation-150: #35302b;
+  --theme-elevation-200: #3e3834;
+  --theme-elevation-250: #47413c;
+  --theme-elevation-300: #504a45;
+  --theme-elevation-350: #59534e;
+  --theme-elevation-400: #625c57;
+  --theme-elevation-450: #6b6560;
+  --theme-elevation-500: #746e69;
+  --theme-elevation-550: #7d7772;
+  --theme-elevation-600: #86807b;
+  --theme-elevation-650: #8f8984;
+  --theme-elevation-700: #98928d;
+  --theme-elevation-750: #a19b96;
+  --theme-elevation-800: #aaa49f;
+  --theme-elevation-850: #b3ada8;
+  --theme-elevation-900: #bcb6b1;
+  --theme-elevation-950: #c5bfba;
+  --theme-elevation-1000: #FFFEFC;
+
+  /* Dorado como color de acento */
+  --theme-success-500: #C9A96E;
+  --theme-success-400: #DFC898;
+  --theme-success-600: #A07F4A;
+
+  /* Texto */
+  --theme-text: #FFFEFC;
+
+  /* Border radius suave */
+  --theme-border-radius: 4px;
+}
+
+/* Login */
+[data-theme="dark"] .login,
+[data-theme="light"] .login {
+  background: #1a1715;
+}
+
+/* Sidebar */
+.nav {
+  border-right-color: rgba(201, 169, 110, 0.15);
+}
+
+/* Links del sidebar activos */
+.nav-group .nav-group__toggle:hover,
+.nav a:hover {
+  color: #C9A96E;
+}
+
+/* Botones primarios — dorado */
+.btn--style-primary {
+  background-color: #C9A96E !important;
+  border-color: #C9A96E !important;
+  color: #231F20 !important;
+}
+
+.btn--style-primary:hover {
+  background-color: #DFC898 !important;
+  border-color: #DFC898 !important;
+}

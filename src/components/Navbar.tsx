@@ -57,9 +57,9 @@ export default function Navbar() {
         `}
       >
         <div className="w-full px-8 md:px-8">
-          <div className="flex items-center justify-between h-16 py-3">
+          <div className="relative flex items-center justify-between h-16 py-3">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0">
+            <Link href="/" className="flex-shrink-0 relative z-10">
               <Image
                 src="/logo/LOGOFINAL2.png"
                 alt="Las Romeas"
@@ -69,8 +69,8 @@ export default function Navbar() {
               />
             </Link>
 
-            {/* Links desktop */}
-            <div className="hidden lg:flex items-center gap-8">
+            {/* Links desktop — centrados en el medio de la pantalla */}
+            <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">
               {navLinks.map((link) => (
                 <div
                   key={link.label}
@@ -80,7 +80,7 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className="text-ink/90 text-sm tracking-[0.2em] uppercase
+                    className="text-ink/90 text-sm tracking-[0.08em] uppercase
                                hover:text-gold transition-colors duration-300
                                relative pb-1"
                   >
@@ -98,7 +98,7 @@ export default function Navbar() {
                           <Link
                             key={cat.id}
                             href={`/shop/${cat.slug}`}
-                            className="block px-5 py-2 text-ink/80 text-xs tracking-[0.15em] uppercase
+                            className="block px-5 py-2 text-ink/80 text-xs tracking-[0.06em] uppercase
                                        hover:text-gold hover:bg-ink/10
                                        transition-colors duration-200"
                           >
@@ -113,7 +113,7 @@ export default function Navbar() {
             </div>
 
             {/* Iconos derecha */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 relative z-10">
               {/* Buscar */}
               <button
                 onClick={() => setSearchOpen(true)}
@@ -165,7 +165,7 @@ export default function Navbar() {
           `}
         >
           <div className="px-6 py-5 space-y-1">
-            <Link href="/about" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.2em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors">
+            <Link href="/about" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.08em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors">
               About us
             </Link>
 
@@ -173,7 +173,7 @@ export default function Navbar() {
             <div>
               <button
                 onClick={() => setShopOpen(!shopOpen)}
-                className="w-full text-left text-ink/90 text-sm tracking-[0.2em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors flex justify-between items-center"
+                className="w-full text-left text-ink/90 text-sm tracking-[0.08em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors flex justify-between items-center"
               >
                 Shop
                 <svg width="12" height="12" viewBox="0 0 12 12" className={`transition-transform duration-300 ${shopOpen ? "rotate-180" : ""}`}>
@@ -187,7 +187,7 @@ export default function Navbar() {
                       key={cat.id}
                       href={`/shop/${cat.slug}`}
                       onClick={() => { setMobileOpen(false); setShopOpen(false); }}
-                      className="block text-ink/70 text-xs tracking-[0.15em] uppercase py-2 hover:text-gold transition-colors"
+                      className="block text-ink/70 text-xs tracking-[0.06em] uppercase py-2 hover:text-gold transition-colors"
                     >
                       {cat.name}
                     </Link>
@@ -196,13 +196,13 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link href="/info" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.2em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors">
+            <Link href="/info" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.08em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors">
               INFO
             </Link>
-            <Link href="/about#press" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.2em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors">
+            <Link href="/about#press" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.08em] uppercase py-3 border-b border-ink/15 hover:text-gold transition-colors">
               PRESS
             </Link>
-            <Link href="/contact" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.2em] uppercase py-3 hover:text-gold transition-colors">
+            <Link href="/contact" onClick={() => setMobileOpen(false)} className="block text-ink/90 text-sm tracking-[0.08em] uppercase py-3 hover:text-gold transition-colors">
               CONTACT
             </Link>
           </div>

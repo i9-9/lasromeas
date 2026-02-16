@@ -108,7 +108,7 @@ export default function HomePage() {
         <div className="w-full">
           <div className="text-center mb-12 space-y-3">
             <div className="divider-gold" />
-            <h2 className="title-section">Colecciones</h2>
+            <h2 className="title-section text-white">Colecciones</h2>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -128,8 +128,6 @@ export default function HomePage() {
                     sizes="(max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-page/90 via-transparent to-transparent" />
                 {/* Texto */}
                 <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                   <h3 className="text-ink text-sm md:text-base font-light tracking-[0.15em] uppercase group-hover:text-gold transition-colors duration-300">
