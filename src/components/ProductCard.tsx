@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Product, formatPrice } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +16,33 @@ function getCategorySlug(categoryId: string): string {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const catSlug = getCategorySlug(product.categoryId);
+  const { addItem } = useCart();
+
+  const isOutOfStock = product.availability === "out of stock";
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isOutOfStock) return;
+
+    if (product.variants && product.variants.length > 0) {
+      const firstAvailable = product.variants.find((v) => v.availability !== "out of stock");
+      if (!firstAvailable) return;
+      addItem({
+        productId: product.id,
+        name: product.name,
+        image: product.image,
+        price: firstAvailable.price,
+        variantLabel: firstAvailable.label,
+      });
+    } else {
+      addItem({
+        productId: product.id,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+      });
+    }
+  };
 
   return (
     <div className="group relative flex flex-col bg-ink/5 border border-ink/15
@@ -35,32 +63,40 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="absolute inset-0 bg-transparent group-hover:bg-ink/20
                         flex items-end justify-center pb-4
                         transition-all duration-500">
-          <button
-            className="opacity-0 group-hover:opacity-100
-                       translate-y-2 group-hover:translate-y-0
-                       transition-all duration-400 ease-out
-                       btn-gold text-xs px-4 py-2"
-            onClick={(e) => {
-              e.preventDefault();
-              // TODO: integrar lógica de carrito
-              alert(`Añadido al carrito: ${product.name}`);
-            }}
-          >
-            Añadir al carrito
-          </button>
+          {!isOutOfStock && (
+            <button
+              className="opacity-0 group-hover:opacity-100
+                         translate-y-2 group-hover:translate-y-0
+                         transition-all duration-400 ease-out
+                         btn-gold text-xs px-4 py-2"
+              onClick={handleAddToCart}
+            >
+              Añadir al carrito
+            </button>
+          )}
         </div>
       </Link>
 
       {/* ── Info ────────────────────────────── */}
       <div className="p-4 flex flex-col gap-1.5 flex-1">
+        {product.badge && (
+          <span className="text-gold/70 text-[10px] tracking-[0.2em] uppercase font-medium">
+            {product.badge}
+          </span>
+        )}
         <Link
           href={`/shop/${catSlug}/${product.slug}`}
-          className="text-ink/90 text-xs md:text-sm tracking-[0.1em] uppercase
-                     hover:text-gold transition-colors duration-200 line-clamp-2 leading-relaxed"
+          className="text-ink/90 text-sm md:text-base tracking-[0.06em] uppercase font-light
+                     hover:text-gold transition-colors duration-200 line-clamp-2 leading-snug"
         >
-          {product.name}
+          {product.shortName}
         </Link>
-        <p className="text-gold text-sm font-semibold mt-auto">
+        {product.subtitle && (
+          <p className="text-ink/45 text-[11px] tracking-[0.03em] leading-snug line-clamp-1">
+            {product.subtitle}
+          </p>
+        )}
+        <p className="text-gold text-sm font-semibold mt-auto pt-1">
           {product.variants && product.variants.length > 0 ? (
             <><span className="text-ink/40 text-xs font-normal">Desde </span>{formatPrice(product.price)}</>
           ) : (

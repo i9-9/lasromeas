@@ -10,7 +10,7 @@ import { PRODUCTS } from '../src/data/products'
 import { CATEGORIES } from '../src/data/categories'
 
 const BASE = 'http://localhost:3000/api'
-const ROOT = path.resolve(import.meta.dirname ?? '.', '..')
+const ROOT = process.cwd()
 
 const email = process.argv[2]
 const password = process.argv[3]
@@ -57,19 +57,29 @@ async function uploadImage(filePath: string, alt: string, token: string): Promis
   const absPath = path.join(ROOT, 'public', filePath)
   if (!fs.existsSync(absPath)) return null
 
-  const formData = new FormData()
   const fileBuffer = fs.readFileSync(absPath)
   const ext = path.extname(absPath).toLowerCase()
   const mimeTypes: Record<string, string> = {
     '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
     '.gif': 'image/gif', '.webp': 'image/webp',
   }
+
+  const formData = new FormData()
   const blob = new Blob([fileBuffer], { type: mimeTypes[ext] ?? 'image/jpeg' })
   formData.append('file', blob, path.basename(absPath))
-  formData.append('alt', alt)
+  formData.append('_payload', JSON.stringify({ alt }))
 
-  const res = await api('/media', { formData, token })
-  return res.doc?.id ?? null
+  const res = await fetch(`${BASE}/media`, {
+    method: 'POST',
+    headers: { 'Authorization': `JWT ${token}` },
+    body: formData,
+  })
+  const json = await res.json()
+  if (!res.ok) {
+    console.log(`    upload error ${res.status}: ${JSON.stringify(json.errors ?? json.message ?? '').substring(0, 100)}`)
+    return null
+  }
+  return json.doc?.id ?? null
 }
 
 async function seed() {
@@ -93,6 +103,15 @@ async function seed() {
   const existingCats = await api('/categories?limit=100', { token })
   for (const c of existingCats.docs ?? []) {
     await api(`/categories/${c.id}`, { method: 'DELETE', token })
+  }
+
+  console.log('Clearing existing media...')
+  let mediaDocs = (await api('/media?limit=500', { token })).docs ?? []
+  while (mediaDocs.length > 0) {
+    for (const m of mediaDocs) {
+      await api(`/media/${m.id}`, { method: 'DELETE', token })
+    }
+    mediaDocs = (await api('/media?limit=500', { token })).docs ?? []
   }
   console.log('✓ Cleared\n')
 
@@ -161,6 +180,9 @@ async function seed() {
         token,
         body: {
           name: product.name,
+          shortName: product.shortName,
+          subtitle: product.subtitle ?? '',
+          badge: product.badge ?? '',
           slug: product.slug,
           category: catId,
           price: product.price,
@@ -170,6 +192,11 @@ async function seed() {
           isFeatured: product.isFeatured ?? false,
           availability: mapAvail(product.availability),
           ...(variants && variants.length > 0 ? { variants } : {}),
+          grainTypes: product.grainTypes ?? [],
+          originCountries: product.originCountries ?? [],
+          cacaoPercents: (product.cacaoPercents ?? []).map(String),
+          chocolateTypes: product.chocolateTypes ?? [],
+          isLimited: product.isLimited ?? false,
         },
       })
       created++

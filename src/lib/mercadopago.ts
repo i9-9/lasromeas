@@ -54,9 +54,9 @@ export async function createPreference(input: CreatePreferenceInput) {
       })),
       payer: input.payer,
       back_urls: {
-        success: `${siteUrl}/shop?payment=success`,
-        failure: `${siteUrl}/shop?payment=failure`,
-        pending: `${siteUrl}/shop?payment=pending`,
+        success: `${siteUrl}/order/confirmation?status=success&ref=${input.external_reference ?? ''}`,
+        failure: `${siteUrl}/order/confirmation?status=failure&ref=${input.external_reference ?? ''}`,
+        pending: `${siteUrl}/order/confirmation?status=pending&ref=${input.external_reference ?? ''}`,
       },
       auto_return: 'approved',
       external_reference: input.external_reference,

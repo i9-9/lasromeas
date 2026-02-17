@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import RelatedProducts from "@/components/RelatedProducts";
 import { CATEGORIES } from "@/data/categories";
 import { PRODUCTS, formatPrice, type CacaoOrigin, type CacaoProcess } from "@/data/products";
+import { useCart } from "@/context/CartContext";
 
 function formatOrigin(origin: CacaoOrigin): string {
   const parts = [origin.country, origin.region, origin.farm].filter(Boolean);
@@ -87,6 +88,8 @@ function ProductDetailContent({
   techSheet: NonNullable<ReturnType<typeof PRODUCTS.find>>["techSheet"];
 }) {
   const [selectedVariant, setSelectedVariant] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
 
   const activePrice = hasVariants
     ? product.variants![selectedVariant].price
@@ -97,6 +100,18 @@ function ProductDetailContent({
     : product.availability;
 
   const isAvailable = activeAvailability !== "out of stock";
+
+  const handleAddToCart = () => {
+    addItem({
+      productId: product.id,
+      name: product.name,
+      image: product.image,
+      price: activePrice,
+      variantLabel: hasVariants ? product.variants![selectedVariant].label : undefined,
+      quantity,
+    });
+    setQuantity(1);
+  };
 
   return (
     <div className="min-h-screen bg-page">
@@ -116,11 +131,21 @@ function ProductDetailContent({
               {categoryName}
             </Link>
             <span className="mx-2">/</span>
-            <span className="text-gold">{product.name}</span>
+            <span className="text-gold">{product.shortName}</span>
           </p>
+          {product.badge && (
+            <span className="inline-block text-gold/80 text-xs tracking-[0.25em] uppercase font-medium mb-2">
+              {product.badge}
+            </span>
+          )}
           <h1 className="text-ink text-3xl md:text-4xl font-light" style={{ fontFamily: '"trajan-pro-3", serif' }}>
-            {product.name}
+            {product.shortName}
           </h1>
+          {product.subtitle && (
+            <p className="text-ink/55 text-sm md:text-base tracking-[0.08em] mt-2">
+              {product.subtitle}
+            </p>
+          )}
         </div>
       </section>
 
@@ -140,11 +165,19 @@ function ProductDetailContent({
                   priority
                 />
               </div>
-              {product.description && (
-                <p className="mt-6 text-ink/80 text-sm leading-relaxed tracking-[0.02em]">
-                  {product.description}
-                </p>
-              )}
+              {/* Nombre completo + descripción */}
+              <div className="mt-6 space-y-3">
+                {product.name !== product.shortName && (
+                  <p className="text-ink/60 text-xs tracking-[0.06em] leading-relaxed italic">
+                    {product.name}
+                  </p>
+                )}
+                {product.description && (
+                  <p className="text-ink/80 text-sm leading-relaxed tracking-[0.02em]">
+                    {product.description}
+                  </p>
+                )}
+              </div>
 
               {/* Selector de variantes */}
               {hasVariants && (
@@ -177,13 +210,39 @@ function ProductDetailContent({
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <p className="text-gold text-xl font-semibold">{formatPrice(activePrice)}</p>
                 {isAvailable ? (
-                  <button
-                    type="button"
-                    className="btn-gold text-sm"
-                    onClick={() => alert(`Añadido al carrito: ${product.name}${hasVariants ? ` (${product.variants![selectedVariant].label})` : ""}`)}
-                  >
-                    Añadir al carrito
-                  </button>
+                  <div className="flex items-center gap-3">
+                    {/* Quantity selector */}
+                    <div className="flex items-center border border-ink/20">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="w-9 h-9 flex items-center justify-center text-ink/60
+                                   hover:text-gold hover:border-gold transition-colors text-sm"
+                        aria-label="Reducir cantidad"
+                      >
+                        −
+                      </button>
+                      <span className="w-9 h-9 flex items-center justify-center text-ink text-sm tabular-nums border-x border-ink/20">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="w-9 h-9 flex items-center justify-center text-ink/60
+                                   hover:text-gold hover:border-gold transition-colors text-sm"
+                        aria-label="Aumentar cantidad"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-gold text-sm"
+                      onClick={handleAddToCart}
+                    >
+                      Añadir al carrito
+                    </button>
+                  </div>
                 ) : (
                   <span className="text-ink/40 text-xs tracking-[0.12em] uppercase">
                     Sin stock

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayment } from '@/lib/mercadopago'
 
+const PAYLOAD_API = 'http://localhost:3000/api'
+
 /**
  * Webhook de Mercado Pago — recibe notificaciones IPN.
- *
- * Configurar la URL de notificación en el dashboard de MP o al crear la preferencia:
- *   https://tu-dominio.com/api/mercadopago/webhook
+ * Actualiza el estado de pago de la orden correspondiente.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -27,11 +27,39 @@ export async function POST(request: NextRequest) {
         `[MercadoPago Webhook] Pago ${paymentId} — estado: ${status}, ref: ${externalReference}`,
       )
 
-      // TODO: Actualizar el estado de la orden en la base de datos
-      // Ejemplo:
-      // if (status === 'approved') {
-      //   await updateOrderStatus(externalReference, 'paid')
-      // }
+      if (externalReference) {
+        // Find order by orderNumber (external_reference)
+        const searchRes = await fetch(
+          `${PAYLOAD_API}/orders?where[orderNumber][equals]=${encodeURIComponent(externalReference)}&limit=1`,
+        )
+
+        if (searchRes.ok) {
+          const searchData = await searchRes.json()
+          const order = searchData.docs?.[0]
+
+          if (order) {
+            // Map MP status to our paymentStatus
+            let paymentStatus: string = order.paymentStatus
+            if (status === 'approved') paymentStatus = 'paid'
+            else if (status === 'rejected' || status === 'cancelled') paymentStatus = 'failed'
+            else if (status === 'refunded') paymentStatus = 'refunded'
+
+            // Update order
+            await fetch(`${PAYLOAD_API}/orders/${order.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                paymentStatus,
+                paymentId: String(paymentId),
+              }),
+            })
+
+            console.log(
+              `[MercadoPago Webhook] Orden ${externalReference} actualizada → ${paymentStatus}`,
+            )
+          }
+        }
+      }
     }
 
     return NextResponse.json({ received: true }, { status: 200 })
