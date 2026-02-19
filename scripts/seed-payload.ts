@@ -12,6 +12,29 @@ import { CATEGORIES } from '../src/data/categories'
 const BASE = 'http://localhost:3000/api'
 const ROOT = process.cwd()
 
+/** Convert plain text to Lexical rich text JSON for Payload's richText field */
+function textToLexical(text: string) {
+  if (!text) return undefined
+  const paragraphs = text.split(/\n\n|\n/).filter(Boolean)
+  return {
+    root: {
+      children: paragraphs.map((p) => ({
+        children: [{ text: p.trim(), type: 'text', version: 1 }],
+        type: 'paragraph',
+        direction: 'ltr' as const,
+        format: '' as const,
+        indent: 0,
+        version: 1,
+      })),
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      type: 'root',
+      version: 1,
+    },
+  }
+}
+
 const email = process.argv[2]
 const password = process.argv[3]
 
@@ -188,7 +211,7 @@ async function seed() {
           price: product.price,
           currency: product.currency,
           ...(imageId ? { image: imageId } : {}),
-          description: product.description ?? '',
+          ...(product.description ? { description: textToLexical(product.description) } : {}),
           isFeatured: product.isFeatured ?? false,
           availability: mapAvail(product.availability),
           ...(variants && variants.length > 0 ? { variants } : {}),
