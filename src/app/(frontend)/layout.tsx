@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import CartDrawer from "@/components/CartDrawer";
 
 export const metadata: Metadata = {
@@ -46,10 +47,12 @@ export default function FrontendLayout({
         <link rel="stylesheet" href="https://use.typekit.net/ken7mut.css" />
       </head>
       <body>
-        <CartProvider>
-          {children}
-          <CartDrawer />
-        </CartProvider>
+        <WishlistProvider>
+          <CartProvider>
+            {children}
+            <CartDrawer />
+          </CartProvider>
+        </WishlistProvider>
       </body>
     </html>
   );

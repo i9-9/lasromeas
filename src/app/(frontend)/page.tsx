@@ -2,24 +2,14 @@ import HeroSlider from "@/components/HeroSlider";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AnimateOnScroll from "@/components/AnimateOnScroll";
+import InstagramFeed from "@/components/InstagramFeed";
 import { FEATURED_PRODUCTS } from "@/data/products";
 import { HOME_COLLECTIONS } from "@/data/categories";
 import Link from "next/link";
 import Image from "next/image";
 
-/* Imágenes de categorías para la grilla Colecciones (public/categorias) */
-const CATEGORY_IMAGES = [
-  "/categorias/Frame-11.png",
-  "/categorias/Frame-12-1.png",
-  "/categorias/Frame-13.png",
-  "/categorias/Frame-153.png",
-  "/categorias/Frame-73.png",
-  "/categorias/Frame-11.png",
-];
-
-/* ────────────────────────────────────────────────
-   Sección: valores de la marca
-   ──────────────────────────────────────────────── */
+/* Valores de la marca */
 const VALUES = [
   {
     label: "SINGLE ORIGIN",
@@ -81,38 +71,39 @@ export default function HomePage() {
       {/* ── Productos Destacados ─────────── */}
       <section className="py-16 px-8 md:px-8 bg-page">
         <div className="w-full">
-          {/* Header */}
-          <div className="text-center mb-12 space-y-3">
-            <div className="divider-gold" />
-            <h2 className="title-section">Descubrí el Universo de Las Romeas</h2>
-          </div>
+          <AnimateOnScroll>
+            <div className="text-center mb-12 space-y-3">
+              <div className="divider-gold" />
+              <h2 className="title-section">Descubrí el Universo de Las Romeas</h2>
+            </div>
+          </AnimateOnScroll>
 
-          {/* Grid de productos (máx 8 destacados en home) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {FEATURED_PRODUCTS.slice(0, 8).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
 
-          {/* CTA ver todos */}
-          <div className="text-center mt-10">
+          <AnimateOnScroll className="text-center mt-10">
             <Link href="/shop" className="btn-outline">
               Ver todos los productos
             </Link>
-          </div>
+          </AnimateOnScroll>
         </div>
       </section>
 
       {/* ── Colecciones ──────────────────── */}
       <section className="py-16 px-8 md:px-8 bg-ink/5">
         <div className="w-full">
-          <div className="text-center mb-12 space-y-3">
-            <div className="divider-gold" />
-            <h2 className="title-section">Colecciones</h2>
-          </div>
+          <AnimateOnScroll>
+            <div className="text-center mb-12 space-y-3">
+              <div className="divider-gold" />
+              <h2 className="title-section">Colecciones</h2>
+            </div>
+          </AnimateOnScroll>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {HOME_COLLECTIONS.map((cat, index) => (
+            {HOME_COLLECTIONS.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/shop/${cat.slug}`}
@@ -121,16 +112,18 @@ export default function HomePage() {
               >
                 <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
                   <Image
-                    src={CATEGORY_IMAGES[index] ?? CATEGORY_IMAGES[0]}
+                    src={cat.image}
                     alt={cat.name}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
+                {/* Overlay para legibilidad del texto */}
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-ink/10 to-transparent" />
                 {/* Texto */}
                 <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                  <h3 className="text-ink text-sm md:text-base font-light tracking-[0.15em] uppercase group-hover:text-gold transition-colors duration-300">
+                  <h3 className="text-white text-sm md:text-base font-light tracking-[0.15em] uppercase group-hover:text-gold transition-colors duration-300">
                     {cat.name}
                   </h3>
                   <span className="block w-0 h-px bg-gold mt-2 group-hover:w-8 transition-all duration-500" />
@@ -143,81 +136,88 @@ export default function HomePage() {
 
       {/* ── Tree & Bean to Bar ───────────── */}
       <section className="py-20 px-8 md:px-8 bg-page relative overflow-hidden">
-        {/* Decoración de fondo */}
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-ink/10 blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-ink/5 blur-2xl translate-y-1/2 -translate-x-1/2" />
 
         <div className="w-full relative z-10">
-          <div className="text-center mb-14 space-y-3">
-            <p className="label-section">Filosofía</p>
-            <div className="divider-gold" />
-            <h2 className="title-section text-4xl md:text-5xl">Tree &amp; Bean to Bar</h2>
-          </div>
-
-          {/* Contenido en dos columnas */}
-          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
-            {/* Columna texto */}
-            <div className="space-y-5 text-ink/75 text-base leading-relaxed">
-              <p>
-                El <strong className="text-ink">Bean to Bar</strong> —de la semilla a la barra— surge como una respuesta
-                a la necesidad de recuperar los orígenes y los sabores verdaderos
-                del cacao fino, regresando a procesos cuidados que respeten la
-                identidad de la semilla en toda la cadena de valor.
-              </p>
-              <p>
-                El <strong className="text-ink">Tree to Bar</strong> —del árbol de cacao hasta la barra de chocolate—
-                nació en América Latina, en países productores de cacao. Hay
-                trazabilidad de proceso desde la plantación.
-              </p>
-              <p>
-                En ambas filosofías, en nuestro caso,{" "}
-                <strong className="text-gold">estamos comprometidos con los productores
-                y su labor con el cacao.</strong> Incluso plantar nuevos árboles,
-                acompañar su crecimiento y cuidado, generar proyectos de sustentabilidad y
-                de intercambios comerciales y de conocimientos.
-              </p>
+          <AnimateOnScroll>
+            <div className="text-center mb-14 space-y-3">
+              <p className="label-section">Filosofía</p>
+              <div className="divider-gold" />
+              <h2 className="title-section text-4xl md:text-5xl">Tree &amp; Bean to Bar</h2>
             </div>
+          </AnimateOnScroll>
 
-            {/* Columna texto 2 */}
-            <div className="space-y-5 text-ink/75 text-base leading-relaxed">
-              <p>
-                Luego del seguimiento en cosecha, poscosecha, fermentación, secado
-                y almacenado, y habiendo seleccionado microlotes y lotes en origen,
-                importamos el cacao seco y ya en fábrica estudiamos nuevamente el grano
-                y desarrollamos las <strong className="text-ink">curvas de tostado especiales</strong> para
-                cada grano, planteando así el proceso de molienda, descascarillado,
-                refinado y conchado para obtener{" "}
-                <strong className="text-gold">nuestro propio chocolate con un desarrollo con &quot;alma mater&quot; y buenas
-                prácticas, sin agregados ni conservantes, manteniendo al máximo sus propiedades nutritivas.</strong>
-              </p>
-              <p>
-                Nuestra meta es llegar a ustedes con cacao y chocolate de calidad,
-                y que disfrutes tanto como nosotros, el mundo sensorial que despierta un cacao fino de aroma
-                y una barra de chocolate que lleva consigo la identidad de un terroir.
-              </p>
+          <AnimateOnScroll>
+            <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
+              <div className="space-y-5 text-ink/75 text-base leading-relaxed">
+                <p>
+                  El <strong className="text-ink">Bean to Bar</strong> —de la semilla a la barra— surge como una respuesta
+                  a la necesidad de recuperar los orígenes y los sabores verdaderos
+                  del cacao fino, regresando a procesos cuidados que respeten la
+                  identidad de la semilla en toda la cadena de valor.
+                </p>
+                <p>
+                  El <strong className="text-ink">Tree to Bar</strong> —del árbol de cacao hasta la barra de chocolate—
+                  nació en América Latina, en países productores de cacao. Hay
+                  trazabilidad de proceso desde la plantación.
+                </p>
+                <p>
+                  En ambas filosofías, en nuestro caso,{" "}
+                  <strong className="text-gold">estamos comprometidos con los productores
+                  y su labor con el cacao.</strong> Incluso plantar nuevos árboles,
+                  acompañar su crecimiento y cuidado, generar proyectos de sustentabilidad y
+                  de intercambios comerciales y de conocimientos.
+                </p>
+              </div>
+
+              <div className="space-y-5 text-ink/75 text-base leading-relaxed">
+                <p>
+                  Luego del seguimiento en cosecha, poscosecha, fermentación, secado
+                  y almacenado, y habiendo seleccionado microlotes y lotes en origen,
+                  importamos el cacao seco y ya en fábrica estudiamos nuevamente el grano
+                  y desarrollamos las <strong className="text-ink">curvas de tostado especiales</strong> para
+                  cada grano, planteando así el proceso de molienda, descascarillado,
+                  refinado y conchado para obtener{" "}
+                  <strong className="text-gold">nuestro propio chocolate con un desarrollo con &quot;alma mater&quot; y buenas
+                  prácticas, sin agregados ni conservantes, manteniendo al máximo sus propiedades nutritivas.</strong>
+                </p>
+                <p>
+                  Nuestra meta es llegar a ustedes con cacao y chocolate de calidad,
+                  y que disfrutes tanto como nosotros, el mundo sensorial que despierta un cacao fino de aroma
+                  y una barra de chocolate que lleva consigo la identidad de un terroir.
+                </p>
+              </div>
             </div>
-          </div>
+          </AnimateOnScroll>
         </div>
       </section>
 
       {/* ── Strip de valores ─────────────── */}
       <section className="py-16 px-8 md:px-8 bg-ink/5 border-y border-ink/15">
         <div className="w-full">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
-            {VALUES.map((v) => (
-              <div key={v.label} className="flex flex-col items-center text-center gap-4">
-                <div className="w-16 h-16 rounded-full border border-ink/25 flex items-center justify-center
-                                hover:border-gold/60 transition-colors duration-400">
-                  {v.icon}
+          <AnimateOnScroll>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
+              {VALUES.map((v) => (
+                <div key={v.label} className="flex flex-col items-center text-center gap-4">
+                  <div className="w-16 h-16 rounded-full border border-ink/25 flex items-center justify-center
+                                  hover:border-gold/60 transition-colors duration-400">
+                    {v.icon}
+                  </div>
+                  <p className="text-ink-dark/80 text-xs tracking-[0.2em] uppercase">
+                    {v.label}
+                  </p>
                 </div>
-                <p className="text-ink-dark/80 text-xs tracking-[0.2em] uppercase">
-                  {v.label}
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </AnimateOnScroll>
         </div>
       </section>
+
+      {/* ── Instagram Feed ───────────────── */}
+      <AnimateOnScroll>
+        <InstagramFeed />
+      </AnimateOnScroll>
 
       <Footer />
     </div>

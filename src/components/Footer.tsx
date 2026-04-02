@@ -131,10 +131,7 @@ export default function Footer() {
         {/* ── Divisor ─────────────────────────── */}
         <div className="mt-14 pt-6 border-t border-ink/15 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-ink/40 text-xs tracking-[0.15em] uppercase">
-            ©LAS ROMEAS 2025
-          </p>
-          <p className="text-ink/30 text-xs">
-            Desarrollado con Next.js &amp; Tailwind CSS
+            ©LAS ROMEAS {new Date().getFullYear()}
           </p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -17,6 +17,13 @@ export default function ShopPage() {
   const [sortBy, setSortBy] = useState<"name" | "price-asc" | "price-desc">(
     "name"
   );
+
+  /* Pre-populate search from navbar navigation (?q=...) */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q) setSearchQuery(q);
+  }, []);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   /* Filtrado + búsqueda + ordenamiento */

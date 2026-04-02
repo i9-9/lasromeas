@@ -102,6 +102,35 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── Press ───────────────────────────── */}
+      <section id="press" className="py-16 px-8 md:px-8">
+        <div className="w-full">
+          <p className="label-section mb-2">Medios</p>
+          <div className="divider-gold mb-6" style={{ marginLeft: 0, marginRight: "auto" }} />
+          <h2 className="title-section mb-4">Press</h2>
+          <p className="text-ink/70 text-sm leading-relaxed mb-10 max-w-xl">
+            Para consultas de prensa, entrevistas o colaboraciones, escribinos a{" "}
+            <a href="mailto:prensa@lasromeas.com" className="text-gold hover:underline">
+              prensa@lasromeas.com
+            </a>
+            .
+          </p>
+
+          {/* Placeholder de logos de medios */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-16 border border-ink/10 flex items-center justify-center
+                           text-ink/25 text-xs tracking-[0.2em] uppercase"
+              >
+                Medio {i}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

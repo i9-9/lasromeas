@@ -83,10 +83,10 @@
     @apply text-ink text-3xl md:text-4xl font-light leading-tight;
   }
 
-  /* Overlay sutil sobre hero (texto legible) */
+  /* Overlay sobre hero: oscurece la parte inferior donde está el texto */
   .overlay-hero {
     @apply absolute inset-0 bg-gradient-to-t
-           from-transparent via-transparent to-ink/20;
+           from-ink/65 via-ink/20 to-transparent;
   }
 }
 
